@@ -1,23 +1,30 @@
+import Link from 'next/link';
 import React from 'react';
 
-interface IProduct  {
+interface IPriceChange {
+    dir: 'up' | 'down' | string;
+    pct: number;
+}
+
+interface IProduct {
     id: string | number;
+    slug: string;
     image: string;
     nameBn: string;
     unit: string;
     today: number;
-    change: {
-        dir: "up" | "down" | string;
-        pct: number;
-    };
-};
+    change: IPriceChange;
+}
 
-const AllProducts = async () => {
-    const res = await fetch('https://api.api-store.workers.dev/api/bazardor/products');
+const AllProducts = async (): Promise<React.JSX.Element> => {
+    const res: Response = await fetch(
+        'https://api.abcz.workers.dev/api/bazardor/products'
+    );
+
     const data: IProduct[] = await res.json();
     console.log(data)
     return (
-        <div className='m-8'>
+        <div className='m-8 '>
             <div className='p-4'>
                 <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
@@ -35,7 +42,7 @@ const AllProducts = async () => {
                             সাজান
                         </span>
 
-                        
+
                         <select
                             defaultValue="default"
                             className="cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-800 shadow-sm outline-none transition-all hover:border-green-500 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
@@ -45,7 +52,7 @@ const AllProducts = async () => {
                             <option value="price-high">দাম: বেশি থেকে কম</option>
                             <option value="name">নাম অনুযায়ী</option>
                         </select>
-                        
+
 
                     </div>
                 </div>
@@ -56,9 +63,10 @@ const AllProducts = async () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 ">
                 {
                     data.map((item) => (
-                        <div
+                        <Link
+                            href={`/product/${item.id}`}
                             key={item.id}
-                            className="w-full rounded-[22px] border border-[#dce5dd] bg-[#fbfdfb] p-5"
+                            className="w-full rounded-[22px] border  border-[#dce5dd] hover:border-green-400 bg-[#fbfdfb] p-5"
                         >
                             <div className="flex items-center gap-4">
                                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#f0f5f0]">
@@ -108,7 +116,7 @@ const AllProducts = async () => {
                                     })}%
                                 </span>
                             </div>
-                        </div>
+                        </Link>
                     ))
                 }
             </div>
