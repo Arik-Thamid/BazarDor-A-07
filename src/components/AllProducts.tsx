@@ -1,127 +1,22 @@
-import Link from 'next/link';
-import React from 'react';
+import ProductCard from "./ProductCard";
+import { type Product } from "@/lib/utils";
 
-interface IPriceChange {
-    dir: 'up' | 'down' | string;
-    pct: number;
-}
-
-interface IProduct {
-    id: string | number;
-    slug: string;
-    image: string;
-    nameBn: string;
-    unit: string;
-    today: number;
-    change: IPriceChange;
-}
-
-const AllProducts = async (): Promise<React.JSX.Element> => {
-    const res: Response = await fetch(
-        'https://api.abcz.workers.dev/api/bazardor/products'
-    );
-
-    const data: IProduct[] = await res.json();
-    console.log(data)
-    return (
-        <div className='m-8 '>
-            <div className='p-4'>
-                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">
-                            সব পণ্য
-                        </h1>
-
-                        <p className="mt-3 text-base text-gray-600">
-                            মোট {data.length.toLocaleString("bn-BD")}টি পণ্য দেখানো হচ্ছে
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <span className="text-base text-gray-700">
-                            সাজান
-                        </span>
-
-
-                        <select
-                            defaultValue="default"
-                            className="cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-800 shadow-sm outline-none transition-all hover:border-green-500 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-                        >
-                            <option value="default">ডিফল্ট</option>
-                            <option value="price-low">দাম: কম থেকে বেশি</option>
-                            <option value="price-high">দাম: বেশি থেকে কম</option>
-                            <option value="name">নাম অনুযায়ী</option>
-                        </select>
-
-
-                    </div>
-                </div>
-
-
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 ">
-                {
-                    data.map((item) => (
-                        <Link
-                            href={`/product/${item.id}`}
-                            key={item.id}
-                            className="w-full rounded-[22px] border  border-[#dce5dd] hover:border-green-400 bg-[#fbfdfb] p-5"
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#f0f5f0]">
-                                    <span className="text-3xl" aria-hidden="true">
-                                        {item.image}
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-xl font-bold text-[#15251c]">
-                                        {item.nameBn}
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        প্রতি {item.unit === "kg" ? "কেজি" : item.unit === "litre" ? "লিটার" : item.unit}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="mt-4 flex items-end justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-500">
-                                        আজকের দাম
-                                    </p>
-
-                                    <p className="mt-1 text-2xl font-bold text-[#173c2b]">
-                                        {item.today.toLocaleString("bn-BD")} টাকা
-                                    </p>
-                                </div>
-
-                                <span
-                                    className={`mb-1 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${item.change.dir === "up"
-                                        ? "bg-red-50 text-red-600"
-                                        : item.change.dir === "down"
-                                            ? "bg-green-50 text-green-700"
-                                            : "bg-gray-100 text-gray-500"
-                                        }`}
-                                >
-                                    {item.change.dir === "up"
-                                        ? "▲"
-                                        : item.change.dir === "down"
-                                            ? "▼"
-                                            : "— "}
-
-                                    {Math.abs(item.change.pct).toLocaleString("bn-BD", {
-                                        minimumFractionDigits: 1,
-                                        maximumFractionDigits: 1,
-                                    })}%
-                                </span>
-                            </div>
-                        </Link>
-                    ))
-                }
-            </div>
+export default function AllProducts({ products }: { products: Product[] }) {
+  return (
+    <section id="সব-পণ্য" className="py-8">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">সব পণ্য</h2>
+          <p className="text-gray-500 text-sm mt-1">
+            মোট {products.length}টি পণ্যের আজকের বাজার দর
+          </p>
         </div>
-    );
-};
-
-export default AllProducts;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

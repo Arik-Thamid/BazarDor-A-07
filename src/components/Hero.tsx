@@ -26,7 +26,7 @@ const HeroSection = () => {
                 </p>
 
                 <Link
-                    href="/"
+                    href="#সব-পণ্য"
                     className="btn border-none bg-green-700 text-white hover:bg-green-800"
                 >
                     সব পণ্য দেখুন

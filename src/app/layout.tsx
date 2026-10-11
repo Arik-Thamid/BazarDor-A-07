@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 
@@ -27,7 +27,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-[#F0F5F0]">
 
-        <Header/>
+      
+        <Navbar/>
         
         <main className="max-w-7xl mx-auto">
           {children}
