@@ -1,29 +1,33 @@
-
-export default function Loading() {
-    return (
-        <main className="mx-auto max-w-7xl animate-pulse px-4 py-8">
-
-            {/* Heading */}
-            <div className="mb-6 space-y-3">
-                <div className="h-7 w-48 rounded-md bg-gray-200" />
-                <div className="h-4 w-72 max-w-full rounded-md bg-gray-200" />
+export default function CategoryLoading() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <div className="skeleton h-8 w-32 mb-2"></div>
+          <div className="skeleton h-4 w-48"></div>
+        </div>
+        <div className="skeleton h-8 w-40"></div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="card bg-white border p-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="skeleton w-12 h-12 rounded-full"></div>
+              <div className="space-y-2 flex-1">
+                <div className="skeleton h-4 w-24"></div>
+                <div className="skeleton h-3 w-16"></div>
+              </div>
             </div>
-
-            {/* Category Cards */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {Array.from({ length: 10 }).map((_, index) => (
-                    <div
-                        key={index}
-                        className="rounded-xl border border-gray-200 p-4"
-                    >
-                        <div className="mb-4 aspect-square rounded-lg bg-gray-200" />
-
-                        <div className="mb-2 h-4 w-3/4 rounded bg-gray-200" />
-
-                        <div className="h-3 w-1/2 rounded bg-gray-200" />
-                    </div>
-                ))}
+            <div className="flex justify-between items-end">
+              <div className="space-y-1">
+                <div className="skeleton h-3 w-16"></div>
+                <div className="skeleton h-6 w-20"></div>
+              </div>
+              <div className="skeleton h-5 w-14"></div>
             </div>
-        </main>
-    );
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

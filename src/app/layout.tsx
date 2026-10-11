@@ -3,6 +3,7 @@ import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 
 const hindSiliguri = Hind_Siliguri({
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
 
         <Footer/>
+        <Toaster position="top-center" reverseOrder={false} />
       </body>
     </html>
   );
