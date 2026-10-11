@@ -11,15 +11,16 @@ export default function CategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [category, setCategory] = useState<Category | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [result, setResult] = useState<{
+    slug: string;
+    products: Product[];
+    category: Category | null;
+    error: boolean;
+  } | null>(null);
   const [sortBy, setSortBy] = useState("default");
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
+    let cancelled = false;
 
     Promise.all([
       fetch(
@@ -36,19 +37,34 @@ export default function CategoryPage() {
       }),
     ])
       .then(([productsData, categoryData]) => {
+        if (cancelled) return;
+
         if (!productsData || productsData.length === 0) {
-          setError(true);
+          setResult({ slug, products: [], category: null, error: true });
         } else {
-          setProducts(productsData);
-          setCategory(categoryData);
+          setResult({
+            slug,
+            products: productsData,
+            category: categoryData,
+            error: false,
+          });
         }
-        setLoading(false);
       })
       .catch(() => {
-        setError(true);
-        setLoading(false);
+        if (!cancelled) {
+          setResult({ slug, products: [], category: null, error: true });
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
+
+  const loading = result?.slug !== slug;
+  const products = result?.slug === slug ? result.products : [];
+  const category = result?.slug === slug ? result.category : null;
+  const error = result?.slug === slug && result.error;
 
   // Sort products — numeric value দিয়ে sort করবে, Bengali numeral নয়
   const sortedProducts = [...products].sort((a, b) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession, authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -12,12 +12,7 @@ export default function UpdateProfilePage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // session load হলে name সেট করো
-  useEffect(() => {
-    if (session?.user?.name) {
-      setName(session.user.name);
-    }
-  }, [session]);
+  const currentName = name || session?.user?.name || "";
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +21,7 @@ export default function UpdateProfilePage() {
     // BetterAuth documentation অনুযায়ী updateUser ব্যবহার করো
     // https://better-auth.com/docs/concepts/users-accounts#update-user
     const { data, error } = await authClient.updateUser({
-      name: name,
+      name: currentName,
     });
 
     if (error) {
@@ -61,7 +56,7 @@ export default function UpdateProfilePage() {
                 type="text"
                 placeholder="আপনার নাম"
                 className="input input-bordered w-full"
-                value={name}
+                value={currentName}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
