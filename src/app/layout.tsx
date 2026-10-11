@@ -5,12 +5,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 
-
 const hindSiliguri = Hind_Siliguri({
   subsets: ["bengali", "latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
-
 
 export const metadata: Metadata = {
   title: "বাজার দর — প্রয়োজনীয় পণ্যের দাম এক নজরে",
@@ -18,24 +16,26 @@ export const metadata: Metadata = {
     "চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলার দাম — বাজারভিত্তিক বিস্তারিত, গড়, সর্বনিম্ন-সর্বোচ্চ এবং দামের পরিবর্তন এক জায়গায়।",
 };
 
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
-      lang="en"
-      data-theme='light'
-      className={`${hindSiliguri.className} h-full antialiased`}
+      lang="bn"
+      data-theme="light"
+      className={`${hindSiliguri.className} min-h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#F0F5F0]">
+      <body className="min-h-screen flex flex-col bg-[#F0F5F0]">
+        <Navbar />
 
-      
-        <Navbar/>
-        
-        <main className="max-w-7xl mx-auto">
+        <main className="w-full max-w-7xl mx-auto px-4 flex-1">
           {children}
         </main>
 
-        <Footer/>
+        <Footer />
+
         <Toaster position="top-center" reverseOrder={false} />
       </body>
     </html>
