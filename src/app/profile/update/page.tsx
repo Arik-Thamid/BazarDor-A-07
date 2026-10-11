@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession, authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -12,30 +12,30 @@ export default function UpdateProfilePage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const currentName = name || session?.user?.name || "";
+  // session load হলে name সেট করো
+  useEffect(() => {
+    if (session?.user?.name) {
+      setName(session.user.name);
+    }
+  }, [session]);
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setLoading(true);
 
-    try {
-      const { error } = await authClient.updateUser({
-        name: currentName,
-      });
+    // BetterAuth documentation অনুযায়ী updateUser ব্যবহার করো
+    // https://better-auth.com/docs/concepts/users-accounts#update-user
+    const { data, error } = await authClient.updateUser({
+      name: name,
+    });
 
-      if (error) {
-        toast.error(error.message || "আপডেট ব্যর্থ হয়েছে!");
-        return;
-      }
-
+    if (error) {
+      toast.error(error.message || "আপডেট ব্যর্থ হয়েছে!");
+    } else {
       toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে! 🎉");
       router.push("/profile");
-    } catch {
-      toast.error("আপডেট ব্যর্থ হয়েছে! আবার চেষ্টা করুন।");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   if (isPending) {
@@ -48,9 +48,7 @@ export default function UpdateProfilePage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        তথ্য আপডেট করুন
-      </h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">তথ্য আপডেট করুন</h1>
 
       <div className="card bg-white border shadow">
         <div className="card-body">
@@ -59,12 +57,11 @@ export default function UpdateProfilePage() {
               <label className="label">
                 <span className="label-text font-medium">নাম</span>
               </label>
-
               <input
                 type="text"
                 placeholder="আপনার নাম"
                 className="input input-bordered w-full"
-                value={currentName}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
@@ -83,7 +80,10 @@ export default function UpdateProfilePage() {
             </button>
           </form>
 
-          <Link href="/profile" className="btn btn-ghost w-full mt-2">
+          <Link
+            href="/profile"
+            className="btn btn-ghost w-full mt-2"
+          >
             ← প্রোফাইলে ফিরে যান
           </Link>
         </div>
