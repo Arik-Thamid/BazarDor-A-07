@@ -14,23 +14,28 @@ export default function UpdateProfilePage() {
 
   const currentName = name || session?.user?.name || "";
 
-  const handleUpdate = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setLoading(true);
 
-    // BetterAuth documentation অনুযায়ী updateUser ব্যবহার করো
-    // https://better-auth.com/docs/concepts/users-accounts#update-user
-    const { data, error } = await authClient.updateUser({
-      name: currentName,
-    });
+    try {
+      const { error } = await authClient.updateUser({
+        name: currentName,
+      });
 
-    if (error) {
-      toast.error(error.message || "আপডেট ব্যর্থ হয়েছে!");
-    } else {
+      if (error) {
+        toast.error(error.message || "আপডেট ব্যর্থ হয়েছে!");
+        return;
+      }
+
       toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে! 🎉");
       router.push("/profile");
+    } catch {
+      toast.error("আপডেট ব্যর্থ হয়েছে! আবার চেষ্টা করুন।");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (isPending) {
@@ -43,7 +48,9 @@ export default function UpdateProfilePage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">তথ্য আপডেট করুন</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        তথ্য আপডেট করুন
+      </h1>
 
       <div className="card bg-white border shadow">
         <div className="card-body">
@@ -52,6 +59,7 @@ export default function UpdateProfilePage() {
               <label className="label">
                 <span className="label-text font-medium">নাম</span>
               </label>
+
               <input
                 type="text"
                 placeholder="আপনার নাম"
@@ -75,10 +83,7 @@ export default function UpdateProfilePage() {
             </button>
           </form>
 
-          <Link
-            href="/profile"
-            className="btn btn-ghost w-full mt-2"
-          >
+          <Link href="/profile" className="btn btn-ghost w-full mt-2">
             ← প্রোফাইলে ফিরে যান
           </Link>
         </div>
